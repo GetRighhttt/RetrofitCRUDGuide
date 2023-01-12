@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RetrofitInDepthGuide</string>
+    <string name="getposts">GetPosts</string>
+    <string name="error">Error</string>
 </resources>
