@@ -1,20 +1,23 @@
 package com.example.retrofitindepthguide.view
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.retrofitindepthguide.R
+import com.example.retrofitindepthguide.api.BlogApi
+import com.example.retrofitindepthguide.api.RetrofitInstance
 import com.example.retrofitindepthguide.databinding.ActivityMainBinding
 import com.example.retrofitindepthguide.model.Post
 import com.example.retrofitindepthguide.view.adapter.BlogPostAdapter
+import com.example.retrofitindepthguide.view.clicklistener.ItemClickListener
 import com.example.retrofitindepthguide.viewmodel.MainViewModel
 
 private const val TAG = "MainActivity"
+const val EXTRA_POST_ID = "EXTRA_POST_ID"
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,7 +52,14 @@ class MainActivity : AppCompatActivity() {
         /*
         set the adapter, and layout manager
          */
-        blogPostAdapter = BlogPostAdapter(this, blogPosts)
+        blogPostAdapter = BlogPostAdapter(this, blogPosts, object : ItemClickListener {
+            override fun onItemClick(post: Post) {
+                val intent = Intent(this@MainActivity, DetailActivity::class.java)
+                intent.putExtra(EXTRA_POST_ID, post.id)
+                startActivity(intent)
+            }
+
+        })
         binding.rvPosts.adapter = blogPostAdapter
         binding.rvPosts.layoutManager = LinearLayoutManager(this)
 
