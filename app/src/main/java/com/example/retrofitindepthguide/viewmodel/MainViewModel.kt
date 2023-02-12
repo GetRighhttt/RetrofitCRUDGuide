@@ -7,6 +7,5 @@ private const val TAG = "MainViewModel"
 class MainViewModel : ViewModel() {
 
     fun getPosts() {
-
     }
 }
