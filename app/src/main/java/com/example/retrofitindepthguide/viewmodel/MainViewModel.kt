@@ -19,7 +19,6 @@ class MainViewModel : ViewModel() {
     val posts: LiveData<List<Post>>
     get() = _posts
 
-
     /*
     Live Data value to note if loading list or not
      */
@@ -32,8 +31,10 @@ class MainViewModel : ViewModel() {
      */
     fun getPosts() {
         viewModelScope.launch {
+            _isLoading.value = true // set loading value to true before getting posts.
             val fetchedPosts = RetrofitInstance.api.getPosts()
             _posts.value = fetchedPosts // sets livedata value.
+            _isLoading.value = false // set to false when finished fetching posts.
         }
     }
 }
