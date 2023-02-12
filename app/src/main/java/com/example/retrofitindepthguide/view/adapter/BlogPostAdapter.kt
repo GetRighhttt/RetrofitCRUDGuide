@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitindepthguide.R
 import com.example.retrofitindepthguide.model.Post
-import com.example.retrofitindepthguide.view.clicklistener.ItemClickListener
 
 class BlogPostAdapter(
     private val context: Context,
@@ -17,6 +16,10 @@ class BlogPostAdapter(
     private val itemClickListener: ItemClickListener
 ) :
     RecyclerView.Adapter<BlogPostAdapter.ViewHolder>() {
+
+    interface ItemClickListener {
+        fun onItemClick(post: Post)
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvId = itemView.findViewById<TextView>(R.id.id_body)

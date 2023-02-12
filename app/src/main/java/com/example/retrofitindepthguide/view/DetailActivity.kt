@@ -22,16 +22,15 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        /*
+        Retrieve postID from Main Activity
+         */
+        val postID = intent.getIntExtra(EXTRA_POST_ID, -1)
 
         /*
        Creates view model instance
         */
         viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
-
-        /*
-        Retrieve postID from Main Activity
-         */
-        val postID = intent.getIntExtra(EXTRA_POST_ID, -1)
 
         /*
         Methods to observe live data changes.
@@ -44,9 +43,21 @@ class DetailActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.user.observe(this, Observer { user ->
+            binding.apply {
+                tvUserName.text = user.name
+                tvUserEmail.text = user.email
+                tvUserName.text = user.username
+                tvWebsite.text = user.website
+                tvPhone.text = user.phone
+            }
+        })
+
         viewModel.isLoading.observe(this, Observer { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
             binding.clContent.visibility = if (isLoading) View.GONE else View.VISIBLE
         })
+
+        viewModel.getPostsDetails(postID)
     }
 }
