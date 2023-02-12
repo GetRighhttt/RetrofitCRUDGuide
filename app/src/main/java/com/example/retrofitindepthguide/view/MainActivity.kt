@@ -1,5 +1,6 @@
 package com.example.retrofitindepthguide.view
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -22,15 +23,25 @@ class MainActivity : AppCompatActivity() {
     private lateinit var blogPostAdapter: BlogPostAdapter
     private val blogPosts = mutableListOf<Post>()
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         /*
-        LiveData from view model to retrieve data
+        Creates view model instance
          */
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+        /*
+        Methods to observe live data changes.
+         */
+        viewModel.posts.observe(this, Observer { posts ->
+            blogPosts.addAll(posts) // update live data with posts observer
+            blogPostAdapter.notifyDataSetChanged() // notify adapter data has changed.
+        })
+
         viewModel.isLoading.observe(this, Observer { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
