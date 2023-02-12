@@ -8,8 +8,11 @@ import retrofit2.converter.moshi.MoshiConverterFactory
  */
 private const val BASE_URL = "https://jsonplaceholder.typicode.com/"
 
-class RetrofitInstance {
+object RetrofitInstance {
 
+    /*
+    Do not need to create object until it is accessed so we initialize it as by lazy
+     */
     private val retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -17,5 +20,8 @@ class RetrofitInstance {
             .build()
     }
 
+    /*
+    Publicly available to be called by other classes, etc.
+     */
     val api: BlogApi by lazy { retrofit.create(BlogApi::class.java) }
 }
