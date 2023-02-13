@@ -9,6 +9,8 @@ import com.example.retrofitindepthguide.model.Post
 import com.example.retrofitindepthguide.model.User
 import kotlinx.coroutines.launch
 
+private const val TAG = "DetailViewModel"
+
 class DetailViewModel: ViewModel() {
     /*
    Variable to get the list of Post with backing property

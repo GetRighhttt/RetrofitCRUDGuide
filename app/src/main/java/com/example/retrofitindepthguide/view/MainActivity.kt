@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         /*
         Creates view model instance
          */
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         /*
         Methods to observe live data changes.
@@ -51,14 +52,15 @@ class MainActivity : AppCompatActivity() {
         /*
         set the adapter, and layout manager
          */
-        blogPostAdapter = BlogPostAdapter(this, blogPosts, object : BlogPostAdapter.ItemClickListener {
-            override fun onItemClick(post: Post) {
-                val intent = Intent(this@MainActivity, DetailActivity::class.java)
-                intent.putExtra(EXTRA_POST_ID, post.id)
-                startActivity(intent)
-            }
+        blogPostAdapter =
+            BlogPostAdapter(this, blogPosts, object : BlogPostAdapter.ItemClickListener {
+                override fun onItemClick(post: Post) {
+                    val intent = Intent(this@MainActivity, DetailActivity::class.java)
+                    intent.putExtra(EXTRA_POST_ID, post.id)
+                    startActivity(intent)
+                }
+            })
 
-        })
         binding.rvPosts.adapter = blogPostAdapter
         binding.rvPosts.layoutManager = LinearLayoutManager(this)
 

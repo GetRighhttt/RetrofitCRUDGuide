@@ -18,7 +18,7 @@
         android:theme="@style/Theme.RetrofitInDepthGuide"
         tools:targetApi="31">
         <activity
-            android:name=".DetailActivity"
+            android:name=".view.DetailActivity"
             android:exported="false" />
         <activity
             android:name=".view.MainActivity"

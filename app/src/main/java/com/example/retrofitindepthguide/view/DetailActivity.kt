@@ -22,15 +22,12 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        /*
-        Retrieve postID from Main Activity
-         */
         val postID = intent.getIntExtra(EXTRA_POST_ID, -1)
 
         /*
        Creates view model instance
         */
-        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        viewModel = ViewModelProvider(this)[DetailViewModel::class.java]
 
         /*
         Methods to observe live data changes.
@@ -55,7 +52,6 @@ class DetailActivity : AppCompatActivity() {
 
         viewModel.isLoading.observe(this, Observer { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-            binding.clContent.visibility = if (isLoading) View.GONE else View.VISIBLE
         })
 
         viewModel.getPostsDetails(postID)
