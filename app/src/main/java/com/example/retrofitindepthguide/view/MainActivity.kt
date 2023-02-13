@@ -49,6 +49,15 @@ class MainActivity : AppCompatActivity() {
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         })
 
+        viewModel.errorMessage.observe(this, Observer { errorMessage ->
+            if (errorMessage == null) {
+                binding.tvError.visibility = View.GONE
+            } else {
+                binding.tvError.visibility = View.VISIBLE
+                Toast.makeText(this, "Error loading posts", Toast.LENGTH_LONG).show()
+            }
+        })
+
         /*
         set the adapter, and layout manager
          */

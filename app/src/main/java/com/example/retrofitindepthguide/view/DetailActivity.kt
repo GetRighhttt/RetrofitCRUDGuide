@@ -34,9 +34,9 @@ class DetailActivity : AppCompatActivity() {
          */
         viewModel.post.observe(this, Observer { post ->
             binding.apply {
-                idBody.text = "Post ${post.id}"
-                titleBody.text = post.title
-                blogBody.text = post.body
+                detailId.text = "Post ${post.id}"
+                detailTitle.text = post.title
+                detailBody.text = post.body
             }
         })
 
