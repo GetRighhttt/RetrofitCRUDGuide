@@ -29,9 +29,18 @@ class MainViewModel : ViewModel() {
     val isLoading: LiveData<Boolean>
         get() = _isLoading
 
+    /*
+    Live Data for error message.
+     */
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?>
         get() = _errorMessage
+
+    /*
+    Maintain state of query parameters for post list
+     */
+    private var currentPage = 1
+    private var currentLimit = 30
 
     /*
     Used in UI layer with Coroutines for asynchronous programming.
@@ -43,8 +52,10 @@ class MainViewModel : ViewModel() {
             _errorMessage.value = null // set initial error message value
 
             try {
-                val fetchedPosts = RetrofitInstance.api.getPosts()
-                _posts.value = fetchedPosts // sets livedata value.
+                val fetchedPosts = RetrofitInstance.api.getPosts(currentPage)
+                currentPage += 1 // increment current page each time.
+                val currentPosts = _posts.value ?: emptyList()
+                _posts.value = currentPosts + fetchedPosts // sets livedata value.
             } catch (e: Exception) {
                 _errorMessage.value = e.message
                 Log.e(TAG, "Exception $e")

@@ -9,8 +9,6 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.retrofitindepthguide.api.BlogApi
-import com.example.retrofitindepthguide.api.RetrofitInstance
 import com.example.retrofitindepthguide.databinding.ActivityMainBinding
 import com.example.retrofitindepthguide.model.Post
 import com.example.retrofitindepthguide.view.adapter.BlogPostAdapter
@@ -39,10 +37,16 @@ class MainActivity : AppCompatActivity() {
 
         /*
         Methods to observe live data changes.
+
+        We do a little pagination here where when we click the get posts button again,
+        it adds on more posts to the end of the list.
          */
         viewModel.posts.observe(this, Observer { posts ->
-            blogPosts.addAll(posts) // update live data with posts observer
+            val numberElements = blogPosts.size // record size of list
+            blogPosts.clear() // clear all posts
+            blogPosts.addAll(posts) // all all posts
             blogPostAdapter.notifyDataSetChanged() // notify adapter data has changed.
+            binding.rvPosts.smoothScrollToPosition(numberElements) // scrolls to end of list to add new data.
         })
 
         viewModel.isLoading.observe(this, Observer { isLoading ->
