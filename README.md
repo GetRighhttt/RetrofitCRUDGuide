@@ -8,6 +8,11 @@
 - Called TCP/IP model
 - Examples: TCP, IP, DNS, DHCP, SSH, FTP, HTTP, HTTPS
 
+### Representational State Transfer(REST)
+- A set of rules or constraints when creating a web service that use HTTP methods
+- Web services that conform to these protocols are said to be RESTFUL
+- Most APIs that we use in Android are said to be RESTFUL
+
 ### HTTP - Hypertext Transfer Protocol(HTTP) Secure(HTTPS)
 - Define a request/response protocol
 - Define how to communicate data between client and the server
@@ -27,8 +32,3 @@
   - PATCH - updating a particular part of the data on a server
   - DELETE - deleting data from server
   - HEAD - fetching data but not returning response body [safe and idempotent]
-
-### Representational State Transfer(REST)
-- A set of rules or constraints when creating a web service that use HTTP methods
-- Web services that conform to these protocols are said to be RESTFUL
-- Most APIs that we use in Android are said to be RESTFUL
