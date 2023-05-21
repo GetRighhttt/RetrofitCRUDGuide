@@ -18,6 +18,10 @@
 ### Coroutines
 - The standard approach to concurrency and asynchronous programming in Android which focuses on suspending threads until work is finished, then continuing and resuming when finished.
 
+<br>
+
+# Overview
+
 ### Internet Protocol Suite
 - Set of communication protocols that specifies how data should be packaged, addresed, routed, and received.
 - Called TCP/IP model
