@@ -3,6 +3,14 @@
 #### A type-safe HTTP client for Android.
 #### Make it simple to convert RESTFUL HTTP methods into methods you can execute in your application.
 
+#### Data Converters (Serializers)
+- Moshi
+- Gson
+- Jackson
+- Protobuf
+- Wire
+- Simple XML
+
 ### Internet Protocol Suite
 - Set of communication protocols that specifies how data should be packaged, addresed, routed, and received.
 - Called TCP/IP model
