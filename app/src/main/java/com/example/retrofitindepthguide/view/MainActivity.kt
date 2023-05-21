@@ -41,26 +41,26 @@ class MainActivity : AppCompatActivity() {
         We do a little pagination here where when we click the get posts button again,
         it adds on more posts to the end of the list.
          */
-        viewModel.posts.observe(this, Observer { posts ->
-            val numberElements = blogPosts.size // record size of list
-            blogPosts.clear() // clear all posts
-            blogPosts.addAll(posts) // all all posts
-            blogPostAdapter.notifyDataSetChanged() // notify adapter data has changed.
-            binding.rvPosts.smoothScrollToPosition(numberElements) // scrolls to end of list to add new data.
-        })
+        viewModel.posts.observe(this) { posts ->
+            val numberElements = blogPosts.size
+            blogPosts.clear()
+            blogPosts.addAll(posts)
+            blogPostAdapter.notifyDataSetChanged()
+            binding.rvPosts.smoothScrollToPosition(numberElements)
+        }
 
-        viewModel.isLoading.observe(this, Observer { isLoading ->
+        viewModel.isLoading.observe(this) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        })
+        }
 
-        viewModel.errorMessage.observe(this, Observer { errorMessage ->
+        viewModel.errorMessage.observe(this) { errorMessage ->
             if (errorMessage == null) {
                 binding.tvError.visibility = View.GONE
             } else {
                 binding.tvError.visibility = View.VISIBLE
                 Toast.makeText(this, "Error loading posts", Toast.LENGTH_LONG).show()
             }
-        })
+        }
 
         /*
         set the adapter, and layout manager
