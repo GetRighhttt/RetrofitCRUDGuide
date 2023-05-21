@@ -2,4 +2,8 @@
     <string name="app_name">RetrofitInDepthGuide</string>
     <string name="getposts">GetPosts</string>
     <string name="error">Error</string>
+    <string name="title">Title</string>
+    <string name="id">ID</string>
+    <string name="id_two">ID:</string>
+    <string name="blog">Blog:</string>
 </resources>
