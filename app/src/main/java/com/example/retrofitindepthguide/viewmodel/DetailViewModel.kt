@@ -19,14 +19,14 @@ private const val TAG = "DetailViewModel"
 
 class DetailViewModel : ViewModel() {
     /*
-   Variable to get the list of Post with backing property
+    Variable to get the list of Post with backing property
     */
     private val _post: MutableLiveData<Post> = MutableLiveData()
     val post: LiveData<Post>
         get() = _post
 
     /*
-  Variable to get the list of Post with backing property
+    Variable to get the list of Post with backing property
    */
     private val _user: MutableLiveData<User> = MutableLiveData()
     val user: LiveData<User>
@@ -43,6 +43,7 @@ class DetailViewModel : ViewModel() {
     Used in UI layer with Coroutines for asynchronous programming.
      */
     fun getPostsDetails(postId: Int) {
+        // get a reference to our api using composition
         val api = RetrofitInstance.api
 
         // Coroutine style
@@ -55,9 +56,6 @@ class DetailViewModel : ViewModel() {
             _user.value = fetchedUser
             _isLoading.value = false
         }
-
-        // Callback style (Not recommended)
-        // fetchDataCallbackStyle(postId)
     }
 
     /*
@@ -80,7 +78,7 @@ class DetailViewModel : ViewModel() {
                     _isLoading.value = false
 
                     // fetch post, then make second api call
-                    api.getUserUsingCallbacks(fetchedPost.id).enqueue(object : Callback<User>{
+                    api.getUserUsingCallbacks(fetchedPost.id).enqueue(object : Callback<User> {
 
                         override fun onFailure(call: Call<User>, t: Throwable) {
                             Log.e(TAG, "Error code: $t")
@@ -88,7 +86,7 @@ class DetailViewModel : ViewModel() {
                         }
 
                         override fun onResponse(call: Call<User>, response: Response<User>) {
-                            if(response.isSuccessful) {
+                            if (response.isSuccessful) {
                                 _isLoading.value = false
                                 val fetchedUser = response.body()!!
                                 _user.value = fetchedUser
