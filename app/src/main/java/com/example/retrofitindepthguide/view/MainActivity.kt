@@ -31,8 +31,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // variable for smooth scrolling
-        val scrollSmooth : (Int) -> Unit = { position -> binding.rvPosts.smoothScrollToPosition(position)}
-
+        val scrollSmooth: (Int) -> Unit =
+            { position -> binding.rvPosts.smoothScrollToPosition(position) }
         /*
         Creates view model instance
          */
