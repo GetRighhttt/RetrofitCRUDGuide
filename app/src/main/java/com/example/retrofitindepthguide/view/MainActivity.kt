@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // variable for smooth scrolling
+        val scrollSmooth : (Int) -> Unit = { position -> binding.rvPosts.smoothScrollToPosition(position)}
+
         /*
         Creates view model instance
          */
@@ -46,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             blogPosts.clear()
             blogPosts.addAll(posts)
             blogPostAdapter.notifyDataSetChanged()
-            binding.rvPosts.smoothScrollToPosition(numberElements)
+            scrollSmooth(numberElements)
         }
 
         viewModel.isLoading.observe(this) { isLoading ->

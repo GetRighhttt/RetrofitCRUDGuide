@@ -21,6 +21,7 @@ class MainViewModel : ViewModel() {
     private val _posts: MutableLiveData<List<Post>> = MutableLiveData()
     val posts: LiveData<List<Post>>
         get() = _posts
+    private operator fun MutableLiveData<List<Post>>.invoke(post: List<Post>) = _posts.postValue(post)
 
     /*
     Live Data value to note if loading list or not
@@ -28,6 +29,7 @@ class MainViewModel : ViewModel() {
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean>
         get() = _isLoading
+    private operator fun MutableLiveData<Boolean>.invoke(state: Boolean) = _isLoading.postValue(state)
 
     /*
     Live Data for error message.
@@ -35,6 +37,7 @@ class MainViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?>
         get() = _errorMessage
+    private operator fun MutableLiveData<String?>.invoke(message: String?) = _errorMessage.postValue(message)
 
     /*
     Maintain state of query parameters for post list
@@ -45,22 +48,22 @@ class MainViewModel : ViewModel() {
     /*
     Used in UI layer with Coroutines for asynchronous programming.
      */
-    fun getPosts() {
+    val getPosts : () -> Unit = {
         viewModelScope.launch {
 
-            _isLoading.value = true // set loading value to true before getting posts.
-            _errorMessage.value = null // set initial error message value
+            _isLoading(true) // set loading value to true before getting posts.
+            _errorMessage(null) // set initial error message value
 
             try {
                 val fetchedPosts = RetrofitInstance.api.getPosts(currentPage)
                 currentPage += 1 // increment current page each time.
                 val currentPosts = _posts.value ?: emptyList()
-                _posts.value = currentPosts + fetchedPosts // sets livedata value.
+                _posts(currentPosts + fetchedPosts) // sets livedata value.
             } catch (e: Exception) {
-                _errorMessage.value = e.message
+                _errorMessage(e.message)
                 Log.e(TAG, "Exception $e")
             } finally {
-                _isLoading.value = false // set to false when finished fetching posts.
+                _isLoading(false) // set to false when finished fetching posts.
             }
         }
     }
