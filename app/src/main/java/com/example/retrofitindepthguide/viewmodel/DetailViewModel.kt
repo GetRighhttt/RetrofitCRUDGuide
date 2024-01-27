@@ -40,7 +40,8 @@ class DetailViewModel : ViewModel() {
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean>
         get() = _isLoading
-    private operator fun MutableLiveData<Boolean>.invoke(state: Boolean) = _isLoading.postValue(state)
+    private operator fun MutableLiveData<Boolean>.invoke(state: Boolean) =
+        _isLoading.postValue(state)
 
     /*
     Used in UI layer with Coroutines for asynchronous programming.
@@ -48,7 +49,6 @@ class DetailViewModel : ViewModel() {
     fun getPostsDetails(postId: Int) {
         // get a reference to our api using composition
         val api = RetrofitInstance.api
-
         // Coroutine style
         viewModelScope.launch {
             _isLoading(true)
@@ -79,7 +79,6 @@ class DetailViewModel : ViewModel() {
                     val fetchedPost = response.body()!!
                     _post(fetchedPost)
                     _isLoading(false)
-
                     // fetch post, then make second api call
                     api.getUserUsingCallbacks(fetchedPost.id).enqueue(object : Callback<User> {
 
