@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.retrofitindepthguide.api.RetrofitInstance
 import com.example.retrofitindepthguide.model.Post
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 private const val TAG = "MainViewModel"
@@ -19,6 +20,7 @@ class MainViewModel : ViewModel() {
     private val _posts: MutableLiveData<List<Post>> = MutableLiveData()
     val posts: LiveData<List<Post>>
         get() = _posts
+
     private operator fun MutableLiveData<List<Post>>.invoke(post: List<Post>) =
         _posts.postValue(post)
 
@@ -28,6 +30,7 @@ class MainViewModel : ViewModel() {
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean>
         get() = _isLoading
+
     private operator fun MutableLiveData<Boolean>.invoke(state: Boolean) =
         _isLoading.postValue(state)
 
@@ -41,11 +44,12 @@ class MainViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?>
         get() = _errorMessage
+
     private operator fun MutableLiveData<String?>.invoke(message: String?) =
         _errorMessage.postValue(message)
 
     private infix fun launchViewModelScope(block: suspend () -> Unit) =
-        viewModelScope.launch { block() }
+        viewModelScope.launch(Dispatchers.IO) { block() }
 
     /*
     Maintain state of query parameters for post list
