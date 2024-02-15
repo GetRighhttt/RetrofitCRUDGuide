@@ -9,11 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.retrofitindepthguide.databinding.ActivityMainBinding
 import com.example.retrofitindepthguide.model.Post
 import com.example.retrofitindepthguide.view.adapter.BlogPostAdapter
 import com.example.retrofitindepthguide.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity"
 const val EXTRA_POST_ID = "EXTRA_POST_ID"
@@ -51,35 +53,44 @@ class MainActivity : AppCompatActivity() {
 
     private val setOnClickForPost: () -> Unit = {
         binding.button.setOnClickListener {
-            //get more posts to add to the list
-            viewModel.fetchPosts()
+            lifecycleScope.launch {
+                //get more posts to add to the list
+                viewModel.fetchPosts()
+            }
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private val observePostsLiveData: () -> Unit = {
-        viewModel.posts.observe(this) { posts ->
-            val numberElements = blogPosts.size
-            blogPosts.clear()
-            blogPosts.addAll(posts)
-            blogPostAdapter.notifyDataSetChanged()
-            scrollSmooth(numberElements)
+        lifecycleScope.launch {
+            viewModel.posts.observe(this@MainActivity) { posts ->
+                val numberElements = blogPosts.size
+                blogPosts.clear()
+                blogPosts.addAll(posts)
+                blogPostAdapter.notifyDataSetChanged()
+                scrollSmooth(numberElements)
+            }
         }
     }
 
     private val observeIsLoadingLiveData: () -> Unit = {
-        viewModel.isLoading.observe(this) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        lifecycleScope.launch {
+            viewModel.isLoading.observe(this@MainActivity) { isLoading ->
+                binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            }
         }
     }
 
     private val errorPostLiveData: () -> Unit = {
-        viewModel.errorMessage.observe(this) { errorMessage ->
-            if (errorMessage == null) {
-                binding.tvError.visibility = View.GONE
-            } else {
-                binding.tvError.visibility = View.VISIBLE
-                Toast.makeText(this, "Error loading posts", Toast.LENGTH_LONG).show()
+        lifecycleScope.launch {
+            viewModel.errorMessage.observe(this@MainActivity) { errorMessage ->
+                if (errorMessage == null) {
+                    binding.tvError.visibility = View.GONE
+                } else {
+                    binding.tvError.visibility = View.VISIBLE
+                    Toast.makeText(this@MainActivity, "Error loading posts", Toast.LENGTH_LONG)
+                        .show()
+                }
             }
         }
     }
@@ -95,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             })
     }
 
-    private val setAdapterInstance: ()-> Unit = {
+    private val setAdapterInstance: () -> Unit = {
         binding.rvPosts.adapter = blogPostAdapter
         binding.rvPosts.layoutManager = LinearLayoutManager(this)
     }
