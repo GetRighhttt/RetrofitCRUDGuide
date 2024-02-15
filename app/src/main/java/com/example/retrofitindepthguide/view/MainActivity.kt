@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.retrofitindepthguide.databinding.ActivityMainBinding
@@ -30,20 +29,35 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // variable for smooth scrolling
-        val scrollSmooth: (Int) -> Unit =
-            { position -> binding.rvPosts.smoothScrollToPosition(position) }
         /*
         Creates view model instance
          */
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        /*
-        Methods to observe live data changes.
+        // live data instances
+        observePostsLiveData.invoke()
+        observePostsLiveData.invoke()
+        errorPostLiveData.invoke()
+        setAdapterOnClick.invoke()
 
-        We do a little pagination here where when we click the get posts button again,
-        it adds on more posts to the end of the list.
-         */
+        binding.rvPosts.adapter = blogPostAdapter
+        binding.rvPosts.layoutManager = LinearLayoutManager(this)
+        setOnClickForPost.invoke()
+    }
+
+    // variable for smooth scrolling
+    private val scrollSmooth: (Int) -> Unit =
+        { position -> binding.rvPosts.smoothScrollToPosition(position) }
+
+    private val setOnClickForPost: () -> Unit = {
+        binding.button.setOnClickListener {
+            //get more posts to add to the list
+            viewModel.fetchPosts()
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private val observePostsLiveData: () -> Unit = {
         viewModel.posts.observe(this) { posts ->
             val numberElements = blogPosts.size
             blogPosts.clear()
@@ -51,11 +65,15 @@ class MainActivity : AppCompatActivity() {
             blogPostAdapter.notifyDataSetChanged()
             scrollSmooth(numberElements)
         }
+    }
 
+    private val observeIsLoadingLiveData: () -> Unit = {
         viewModel.isLoading.observe(this) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
+    }
 
+    private val errorPostLiveData: () -> Unit = {
         viewModel.errorMessage.observe(this) { errorMessage ->
             if (errorMessage == null) {
                 binding.tvError.visibility = View.GONE
@@ -64,10 +82,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error loading posts", Toast.LENGTH_LONG).show()
             }
         }
+    }
 
-        /*
-        set the adapter, and layout manager
-         */
+    private val setAdapterOnClick:() -> Unit = {
         blogPostAdapter =
             BlogPostAdapter(this, blogPosts, object : BlogPostAdapter.ItemClickListener {
                 override fun onItemClick(post: Post) {
@@ -76,17 +93,5 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             })
-
-        binding.rvPosts.adapter = blogPostAdapter
-        binding.rvPosts.layoutManager = LinearLayoutManager(this)
-
-        /*
-        button to fetch posts.
-         */
-        binding.button.setOnClickListener {
-
-            //get more posts to add to the list
-            viewModel.getPosts()
-        }
     }
 }

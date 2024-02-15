@@ -1,14 +1,12 @@
 package com.example.retrofitindepthguide.viewmodel
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.retrofitindepthguide.api.RetrofitInstance
 import com.example.retrofitindepthguide.model.Post
-import com.example.retrofitindepthguide.model.User
 import kotlinx.coroutines.launch
 
 private const val TAG = "MainViewModel"
@@ -33,6 +31,10 @@ class MainViewModel : ViewModel() {
     private operator fun MutableLiveData<Boolean>.invoke(state: Boolean) =
         _isLoading.postValue(state)
 
+    init {
+        _isLoading(false)
+    }
+
     /*
     Live Data for error message.
      */
@@ -53,9 +55,8 @@ class MainViewModel : ViewModel() {
     /*
     Used in UI layer with Coroutines for asynchronous programming.
      */
-    val getPosts: () -> Unit = {
+    val fetchPosts: () -> Unit = {
         launchViewModelScope {
-
             _isLoading(true) // set loading value to true before getting posts.
             _errorMessage(null) // set initial error message value
 
@@ -71,8 +72,5 @@ class MainViewModel : ViewModel() {
                 _isLoading(false) // set to false when finished fetching posts.
             }
         }
-    }
-    init {
-        getPosts.invoke()
     }
 }
