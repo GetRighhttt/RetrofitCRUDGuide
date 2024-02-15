@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.retrofitindepthguide.databinding.ActivityMainBinding
@@ -34,13 +36,12 @@ class MainActivity : AppCompatActivity() {
          */
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        // live data instances
+        // live data instances and variables instances to invoke.
         observePostsLiveData.invoke()
         observeIsLoadingLiveData.invoke()
         errorPostLiveData.invoke()
         setAdapterOnClick.invoke()
-        binding.rvPosts.adapter = blogPostAdapter
-        binding.rvPosts.layoutManager = LinearLayoutManager(this)
+        setAdapterInstance.invoke()
         setOnClickForPost.invoke()
     }
 
@@ -92,5 +93,10 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
             })
+    }
+
+    private val setAdapterInstance: ()-> Unit = {
+        binding.rvPosts.adapter = blogPostAdapter
+        binding.rvPosts.layoutManager = LinearLayoutManager(this)
     }
 }
