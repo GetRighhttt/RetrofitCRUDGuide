@@ -84,6 +84,8 @@ class MainActivity : AppCompatActivity() {
         button to fetch posts.
          */
         binding.button.setOnClickListener {
+
+            //get more posts to add to the list
             viewModel.getPosts()
         }
     }

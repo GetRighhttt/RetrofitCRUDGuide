@@ -72,4 +72,7 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+    init {
+        getPosts.invoke()
+    }
 }
