@@ -2,10 +2,10 @@ package com.example.retrofitindepthguide.view
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.retrofitindepthguide.databinding.ActivityMainBinding
@@ -36,10 +36,9 @@ class MainActivity : AppCompatActivity() {
 
         // live data instances
         observePostsLiveData.invoke()
-        observePostsLiveData.invoke()
+        observeIsLoadingLiveData.invoke()
         errorPostLiveData.invoke()
         setAdapterOnClick.invoke()
-
         binding.rvPosts.adapter = blogPostAdapter
         binding.rvPosts.layoutManager = LinearLayoutManager(this)
         setOnClickForPost.invoke()
@@ -84,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val setAdapterOnClick:() -> Unit = {
+    private val setAdapterOnClick: () -> Unit = {
         blogPostAdapter =
             BlogPostAdapter(this, blogPosts, object : BlogPostAdapter.ItemClickListener {
                 override fun onItemClick(post: Post) {
