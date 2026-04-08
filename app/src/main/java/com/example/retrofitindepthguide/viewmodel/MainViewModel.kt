@@ -7,74 +7,44 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.retrofitindepthguide.api.RetrofitInstance
 import com.example.retrofitindepthguide.model.Post
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
-private const val TAG = "MainViewModel"
-
 class MainViewModel : ViewModel() {
-
-    /*
-    Variable to get the list of Post with backing property
-     */
     private val _posts: MutableLiveData<List<Post>> = MutableLiveData()
-    val posts: LiveData<List<Post>>
-        get() = _posts
-
-    private operator fun MutableLiveData<List<Post>>.invoke(post: List<Post>) =
-        _posts.postValue(post)
-
-    /*
-    Live Data value to note if loading list or not
-     */
+    val posts: LiveData<List<Post>> get() = _posts
     private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
-
-    private operator fun MutableLiveData<Boolean>.invoke(state: Boolean) =
-        _isLoading.postValue(state)
-
-    init {
-        _isLoading(false)
-    }
-
-    /*
-    Live Data for error message.
-     */
+    val isLoading: LiveData<Boolean> get() = _isLoading
     private val _errorMessage = MutableLiveData<String?>(null)
-    val errorMessage: LiveData<String?>
-        get() = _errorMessage
+    val errorMessage: LiveData<String?> get() = _errorMessage
 
-    private operator fun MutableLiveData<String?>.invoke(message: String?) =
-        _errorMessage.postValue(message)
-
-    private infix fun launchViewModelScope(block: suspend () -> Unit) =
-        viewModelScope.launch(Dispatchers.IO) { block() }
-
-    /*
-    Maintain state of query parameters for post list
-     */
     private var currentPage = 1
 
-    /*
-    Used in UI layer with Coroutines for asynchronous programming.
-     */
-    val fetchPosts: () -> Unit = {
-        launchViewModelScope {
-            _isLoading(true) // set loading value to true before getting posts.
-            _errorMessage(null) // set initial error message value
-
+    fun fetchPosts() {
+        viewModelScope.launch {
+            _isLoading.value = true
             try {
                 val fetchedPosts = RetrofitInstance.api.getPosts(currentPage)
-                currentPage += 1 // increment current page each time.
+                currentPage += 1
                 val currentPosts = _posts.value ?: emptyList()
-                _posts(currentPosts + fetchedPosts) // sets livedata value.
+                _posts.value = currentPosts + fetchedPosts
+            } catch (e: CancellationException) {
+                Log.e(TAG, "Coroutine Cancelled")
+                throw e
             } catch (e: Exception) {
-                _errorMessage(e.message)
                 Log.e(TAG, "Exception $e")
+                _errorMessage.value = e.message
             } finally {
-                _isLoading(false) // set to false when finished fetching posts.
+                _isLoading.value = false
             }
         }
+    }
+
+    init {
+        _isLoading.value = false
+    }
+
+    companion object {
+        private const val TAG = "MainViewModel"
     }
 }

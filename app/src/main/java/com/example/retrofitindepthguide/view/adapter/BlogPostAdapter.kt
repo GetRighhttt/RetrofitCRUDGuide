@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitindepthguide.R
 import com.example.retrofitindepthguide.model.Post
@@ -17,7 +16,6 @@ class BlogPostAdapter(
     private val itemClickListener: ItemClickListener
 ) :
     RecyclerView.Adapter<BlogPostAdapter.ViewHolder>() {
-
     interface ItemClickListener {
         fun onItemClick(post: Post)
     }
@@ -29,7 +27,7 @@ class BlogPostAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(post: Post) {
-            tvId.text = "Post #${post.id}"
+            tvId.text = "Post #${post.id ?: 0}"
             tvTitle.text = post.title
             tvPost.text = post.body
             itemView.setOnClickListener {

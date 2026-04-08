@@ -52,3 +52,6 @@
   - PATCH - updating a particular part of the data on a server
   - DELETE - deleting data from server
   - HEAD - fetching data but not returning response body [safe and idempotent]
+
+
+
