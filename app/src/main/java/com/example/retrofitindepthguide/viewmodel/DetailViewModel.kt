@@ -9,7 +9,6 @@ import com.example.retrofitindepthguide.api.RetrofitInstance.api
 import com.example.retrofitindepthguide.model.Post
 import com.example.retrofitindepthguide.model.User
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class DetailViewModel : ViewModel() {
@@ -20,22 +19,25 @@ class DetailViewModel : ViewModel() {
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    fun getPostsDetails(postId: Int?) {
+    fun getPostsDetails(postId: Int) {
         viewModelScope.launch {
             _isLoading.value = true
-            try {
-                val post = api.getPost(postId ?: 0)
-                val userDeferred = async {
-                    api.getUser(post.id ?: 0)
+
+            runCatching {
+                try {
+                    val post = api.getPost(postId)
+                    val user = api.getUser(post.userId)
+
+                    _post.value = post
+                    _user.value = user
+                } catch (e: Exception) {
+                    if (e is CancellationException) throw e
+                    Log.e("CHECK", "Failed to fetch post details", e)
+                } finally {
+                    _isLoading.value = false
                 }
-                _post.value = post
-                _user.value = userDeferred.await()
-            } catch (e: Exception) {
-                if (e is CancellationException) throw e
-            } catch (e: Exception) {
-                Log.e("CHECK", "Failed to fetch post details", e)
-            } finally {
-                _isLoading.value = false
+            }.onFailure { throwable ->
+                Log.e("DetailViewModel", "Failed to fetch post details", throwable)
             }
         }
     }

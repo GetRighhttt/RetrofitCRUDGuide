@@ -21,7 +21,7 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[DetailViewModel::class.java]
-        val postID = intent?.getIntExtra(EXTRA_POST_ID, -1)
+        val postID = intent.getIntExtra(EXTRA_POST_ID, -1)
         viewModel.getPostsDetails(postID)
         setUpObservers()
     }

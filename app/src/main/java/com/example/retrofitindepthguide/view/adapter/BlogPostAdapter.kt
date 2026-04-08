@@ -27,7 +27,7 @@ class BlogPostAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(post: Post) {
-            tvId.text = "Post #${post.id ?: 0}"
+            tvId.text = "Post #${post.id}"
             tvTitle.text = post.title
             tvPost.text = post.body
             itemView.setOnClickListener {

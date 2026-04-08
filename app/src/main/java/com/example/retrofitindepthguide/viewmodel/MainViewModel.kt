@@ -17,31 +17,31 @@ class MainViewModel : ViewModel() {
     val isLoading: LiveData<Boolean> get() = _isLoading
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?> get() = _errorMessage
-
     private var currentPage = 1
 
     fun fetchPosts() {
         viewModelScope.launch {
             _isLoading.value = true
-            try {
-                val fetchedPosts = RetrofitInstance.api.getPosts(currentPage)
-                currentPage += 1
-                val currentPosts = _posts.value ?: emptyList()
-                _posts.value = currentPosts + fetchedPosts
-            } catch (e: CancellationException) {
-                Log.e(TAG, "Coroutine Cancelled")
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Exception $e")
-                _errorMessage.value = e.message
-            } finally {
-                _isLoading.value = false
+
+            runCatching {
+                try {
+                    val fetchedPosts = RetrofitInstance.api.getPosts(currentPage)
+                    currentPage += 1
+                    val currentPosts = _posts.value ?: emptyList()
+                    _posts.value = currentPosts + fetchedPosts
+                } catch (e: CancellationException) {
+                    Log.e(TAG, "Coroutine Cancelled")
+                    throw e
+                } catch (e: Exception) {
+                    Log.e(TAG, "Exception $e")
+                    _errorMessage.value = e.message
+                } finally {
+                    _isLoading.value = false
+                }
+            }.onFailure { throwable ->
+                Log.e(TAG, "Failed to fetch posts", throwable)
             }
         }
-    }
-
-    init {
-        _isLoading.value = false
     }
 
     companion object {
