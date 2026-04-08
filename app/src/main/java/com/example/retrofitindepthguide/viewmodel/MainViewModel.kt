@@ -26,8 +26,10 @@ class MainViewModel : ViewModel() {
             runCatching {
                 try {
                     val fetchedPosts = RetrofitInstance.api.getPosts(currentPage)
-                    currentPage += 1
+
+                    //setup custom pagination
                     val currentPosts = _posts.value ?: emptyList()
+                    currentPage += 1
                     _posts.value = currentPosts + fetchedPosts
                 } catch (e: CancellationException) {
                     Log.e(TAG, "Coroutine Cancelled")
