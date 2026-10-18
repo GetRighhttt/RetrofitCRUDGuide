@@ -1,9 +1,13 @@
 # RetrofitCRUDGuide
-#### A library which allows us to easily embed networking in our application.
-#### A type-safe HTTP client for Android.
-#### Make it simple to convert RESTFUL HTTP methods into methods you can execute in your application.
 
-#### Data Converters (Serializers)
+My Android networking notes and Retrofit example. The app retrieves posts and user details from JSONPlaceholder. The notes cover converters, concurrency, REST, and HTTP methods.
+
+Retrofit is a type-safe HTTP client for Android and the JVM. An annotated interface defines HTTP requests as methods the app can call.
+
+## Data converters
+
+Converters translate request and response bodies into application types. Retrofit supports converters for formats and libraries such as:
+
 - Moshi
 - Gson
 - Jackson
@@ -11,47 +15,45 @@
 - Wire
 - Simple XML
 
-### Concurrency
-- Running multiple tasks simultaneously using one core processing Unit
-- #### Asynchronous - when those tasks run and do not block another thread from running i.e freeing up the main thread for its tasks/suspension - Android typically refreshes at 60 FPS. In order not to block the main thread, heavy work must be completed on a background thread, then sent back to main thread to update the UI.
+## Concurrency
 
-### Coroutines
-- The standard approach to concurrency and asynchronous programming in Android which focuses on suspending threads until work is finished, then continuing and resuming when finished.
-- Essentially work on a background thread as light weight tasks, but are not individually background threads themselves.
+Concurrency lets multiple tasks make progress during overlapping periods. Parallelism runs tasks at the same time on different cores.
+
+Asynchronous work lets the caller continue before a result is ready. In Android, move blocking I/O and expensive computation off the main thread so the UI can respond to input and draw frames. Update Views on the main thread.
+
+## Coroutines
+
+Kotlin coroutines support asynchronous work through suspension. A suspended coroutine releases its thread until it can resume. A coroutine is not a thread, and launching one does not automatically move work to a background thread. Its dispatcher determines where it runs.
+
+Use a lifecycle-owned scope for Android work. Retrofit's suspending API calls can wait for a network result without blocking the main thread. Blocking I/O and CPU-heavy work still need an appropriate dispatcher.
 
 <br>
 
-# Overview
+## Networking overview
 
-### Internet Protocol Suite
-- Set of communication protocols that specifies how data should be packaged, addresed, routed, and received.
-- Called TCP/IP model
-- Examples: TCP, IP, DNS, DHCP, SSH, FTP, HTTP, HTTPS
+### Internet protocol suite
 
-### Representational State Transfer(REST)
-- A set of rules or constraints when creating a web service that use HTTP methods
-- Web services that conform to these protocols are said to be RESTFUL
-- Most APIs that we use in Android are said to be RESTFUL
+The internet protocol suite, often called TCP/IP, defines how devices address, transmit, route, and receive data. It includes protocols such as IP, TCP, UDP, DNS, and HTTP. These protocols operate at different layers.
 
-### HTTP - Hypertext Transfer Protocol(HTTP) Secure(HTTPS)
-- Define a request/response protocol
-- Define how to communicate data between client and the server
+### Representational state transfer (REST)
 
-### HTTP Methods
-- Formats for procedures that a client request a web service to execute
-- Client Request consist of 3 parts: <verb><address><protocol>
-- Also adds in headers[metadata about the request] and a request body
-- Server response: <protocol><response code>
-- Safe: doesn't alter state of server
-- Idempotent: identical request can be made repeatedly with same effect
-  
-  #### Method Types(Most common)
-  - GET - reading data from server and returns a response body [safe and idempotent]
-  - POST - creating data on a server
-  - PUT - updating data on a server
-  - PATCH - updating a particular part of the data on a server
-  - DELETE - deleting data from server
-  - HEAD - fetching data but not returning response body [safe and idempotent]
+REST is an architectural style with constraints such as client-server separation, stateless requests, and a uniform interface. HTTP APIs often model resources through URLs and operate on them with HTTP methods. Using HTTP alone does not make an API RESTful.
 
+### HTTP and HTTPS
 
+HTTP defines requests and responses between clients and servers. HTTPS protects HTTP traffic with TLS.
 
+### HTTP methods
+
+An HTTP/1.1 request line contains a method, request target, and protocol version. Headers supply metadata, and some requests include a body. A response has a status line, headers, and an optional body.
+
+A safe method does not request a change to server state. An idempotent method has the same intended effect when repeated as it does when called once; responses can still differ.
+
+#### Common methods
+
+- GET retrieves a resource. It is safe and idempotent.
+- POST submits data for processing, often to create a resource. It is not inherently idempotent.
+- PUT creates or replaces the resource at a known URL. It is idempotent.
+- PATCH applies a partial update. It is not inherently idempotent.
+- DELETE removes the resource at a URL. It is idempotent.
+- HEAD requests response headers without a response body. It is safe and idempotent.
